@@ -4,11 +4,20 @@ pipeline{
       PATH = "${PATH}:${getTerraformPath()}"
     }
     stages{
-        stage('terraform init'){
-            steps{
-                sh "terraform init"
-            }
+      stage('terraform init and apply - dev'){
+        steps{
+            sh returnStatus: true, script: 'terraform workspace new dev'
+            sh "terraform init"
+            sh "terrafrom apply -var-file=dev.tfvars"
         }
+      }
+      stage('terraform init and apply - prod'){
+        steps{
+            sh returnStatus: true, script: 'terraform workspace new prod'
+            sh "terraform init"
+            sh "terrafrom apply -var-file=prod.tfvars"
+        }
+      }
     }
 }
 
